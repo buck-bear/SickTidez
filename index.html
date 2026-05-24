@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>SickTidez — Rye, NY</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #0a1628;
+            color: #e8f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 20px 16px 48px;
+        }
+
+        .container { max-width: 420px; margin: 0 auto; }
+
+        header { text-align: center; padding: 20px 0 18px; }
+
+        h1 {
+            font-size: 30px;
+            font-weight: 800;
+            color: #7dc8e0;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #7a9bb5;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .card {
+            background: #112240;
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            border: 1px solid #1e3a5f;
+        }
+
+        .card-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+            color: #7a9bb5;
+            margin-bottom: 12px;
+        }
+
+        /* Tides */
+        .tide-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 0;
+            border-bottom: 1px solid #1a3050;
+        }
+        .tide-row:last-child { border-bottom: none; }
+
+        .tide-badge {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 46px;
+            text-align: center;
+        }
+        .tide-high { background: #1a4a6b; color: #7dc8e0; }
+        .tide-low  { background: #2a1f0a; color: #c4a45a; }
+
+        .tide-time { font-size: 20px; font-weight: 600; }
+        .tide-date { font-size: 12px; color: #7a9bb5; text-align: right; margin-top: 1px; }
+
+        /* Sun + Waves row */
+        .trio {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+        .trio-item {}
+        .trio-icon { font-size: 22px; display: block; margin-bottom: 5px; }
+        .trio-label {
+            font-size: 11px;
+            color: #7a9bb5;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+        }
+        .trio-value { font-size: 18px; font-weight: 600; margin-top: 3px; }
+        .trio-sub   { font-size: 11px; color: #4a6a85; margin-top: 2px; }
+
+        /* Weather table */
+        .wx-row {
+            display: grid;
+            grid-template-columns: 54px 46px 1fr auto;
+            gap: 6px;
+            padding: 7px 0;
+            border-bottom: 1px solid #1a3050;
+            align-items: center;
+            font-size: 13px;
+        }
+        .wx-row:last-child { border-bottom: none; }
+        .wx-hour   { color: #7dc8e0; font-weight: 600; }
+        .wx-temp   { color: #e8c87a; }
+        .wx-wind   { color: #a0c8a0; font-size: 12px; }
+        .wx-precip { color: #7a9bb5; font-size: 12px; text-align: right; }
+
+        /* Controls */
+        .refresh-btn {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            background: #1a3a5c;
+            color: #7dc8e0;
+            border: 1px solid #2a5080;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+            transition: background 0.15s;
+        }
+        .refresh-btn:active { background: #1e4a70; }
+
+        .updated {
+            text-align: center;
+            font-size: 11px;
+            color: #3a5a75;
+            margin-top: 14px;
+        }
+
+        /* Loading / error */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7a9bb5;
+            font-size: 15px;
+        }
+        .spinner {
+            display: inline-block;
+            width: 26px; height: 26px;
+            border: 3px solid #1e3a5f;
+            border-top-color: #7dc8e0;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 14px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .error { color: #c46a6a; font-size: 13px; text-align: center; padding: 10px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>SickTidez</h1>
+        <div class="subtitle">For Rye, NY Sailorz</div>
+    </header>
+
+    <div id="content">
+        <div class="loading"><div class="spinner"></div><br>Fetching conditions…</div>
+    </div>
+
+    <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
+    <div class="updated" id="updated"></div>
+</div>
+
+<script>
+const LAT = 40.9815, LON = -73.6868, STATION = '8518091';
+
+// ── NY time helpers ────────────────────────────────────────────────────────
+function getNY() {
+    const now = new Date();
+    const fmt = (opts) => new Intl.DateTimeFormat('en-US', {timeZone: 'America/New_York', ...opts});
+    const p = fmt({year:'numeric', month:'2-digit', day:'2-digit',
+                   hour:'2-digit', minute:'2-digit', hour12:false})
+              .formatToParts(now)
+              .reduce((a, p) => { a[p.type] = p.value; return a; }, {});
+    const h = p.hour === '24' ? '00' : p.hour;
+    return {
+        year: p.year, month: p.month, day: p.day, hour: h, minute: p.minute,
+        yyyymmdd:  `${p.year}${p.month}${p.day}`,
+        nowStr:    `${p.year}-${p.month}-${p.day} ${h}:${p.minute}`,
+        isoHour:   `${p.year}-${p.month}-${p.day}T${h}:00`,
+        display12: fmt({hour:'numeric', minute:'2-digit'}).format(now)
+    };
+}
+
+function getDOY(ny) {
+    const start = new Date(Date.UTC(+ny.year, 0, 1));
+    const cur   = new Date(Date.UTC(+ny.year, +ny.month - 1, +ny.day));
+    return Math.round((cur - start) / 86400000) + 1;
+}
+
+function utcHToStr(utcH, ny) {
+    let h = Math.floor(utcH) % 24;
+    let m = Math.round((utcH % 1) * 60);
+    if (m === 60) { h = (h + 1) % 24; m = 0; }
+    const dt = new Date(Date.UTC(+ny.year, +ny.month - 1, +ny.day, h, m));
+    return dt.toLocaleTimeString('en-US', {timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit'});
+}
+
+// ── Sunrise / Sunset ───────────────────────────────────────────────────────
+function calcSunTimes(ny) {
+    const n    = getDOY(ny);
+    const latR = LAT * Math.PI / 180;
+    const decl = -23.45 * Math.PI / 180 * Math.cos(2 * Math.PI / 365 * (n + 10));
+    let cosHA  = -Math.tan(latR) * Math.tan(decl);
+    cosHA = Math.max(-1, Math.min(1, cosHA));
+    const haDeg = Math.acos(cosHA) * 180 / Math.PI;
+    const B     = 2 * Math.PI / 365 * (n - 81);
+    const eot   = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+    const noon  = 12 - LON / 15 - eot / 60;
+    return {
+        sunrise: utcHToStr(noon - haDeg / 15, ny),
+        sunset:  utcHToStr(noon + haDeg / 15, ny)
+    };
+}
+
+// ── Tides ──────────────────────────────────────────────────────────────────
+async function fetchTides(ny) {
+    const d2   = new Date(Date.UTC(+ny.year, +ny.month - 1, +ny.day + 1));
+    const tom  = d2.toISOString().slice(0, 10).replace(/-/g, '');
+    const url  = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter`
+               + `?station=${STATION}&product=predictions&datum=MLLW`
+               + `&time_zone=lst_ldt&interval=hilo&units=english&format=json`
+               + `&begin_date=${ny.yyyymmdd}&end_date=${tom}`;
+    const data = await fetch(url).then(r => r.json());
+    return data.predictions.filter(p => p.t > ny.nowStr).slice(0, 2).map(p => {
+        // NOAA times are local (no TZ info) — treat as NY time
+        const [date, time] = p.t.split(' ');
+        const [y, mo, d]   = date.split('-').map(Number);
+        const [h, m]       = time.split(':').map(Number);
+        const dt = new Date(Date.UTC(y, mo - 1, d, h, m));
+        // Offset back to get display — NOAA already returns LST/LDT so treat as NY
+        const dispTime = dt.toLocaleTimeString('en-US', {timeZone: 'UTC', hour: 'numeric', minute: '2-digit'});
+        const dispDate = dt.toLocaleDateString('en-US', {timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric'});
+        return { type: p.type, time: dispTime, date: dispDate };
+    });
+}
+
+// ── Weather ────────────────────────────────────────────────────────────────
+async function fetchWeather() {
+    const points = await fetch(`https://api.weather.gov/points/${LAT},${LON}`).then(r => r.json());
+    const hourly = await fetch(points.properties.forecastHourly).then(r => r.json());
+    const nowHour = new Date(); nowHour.setMinutes(0, 0, 0);
+    return hourly.properties.periods
+        .filter(p => new Date(p.startTime) >= nowHour)
+        .slice(0, 12)
+        .map(p => ({
+            hour:   new Date(p.startTime).toLocaleTimeString('en-US', {timeZone: 'America/New_York', hour: 'numeric'}),
+            temp:   p.temperature,
+            wind:   `${p.windDirection} ${p.windSpeed}`,
+            precip: p.probabilityOfPrecipitation?.value ?? 0
+        }));
+}
+
+// ── Waves ──────────────────────────────────────────────────────────────────
+async function fetchWaves(ny) {
+    const url  = `https://marine-api.open-meteo.com/v1/marine`
+               + `?latitude=${LAT}&longitude=${LON}`
+               + `&hourly=wave_height&timezone=America%2FNew_York&forecast_days=1`;
+    const data = await fetch(url).then(r => r.json());
+    const idx  = data.hourly.time.indexOf(ny.isoHour);
+    if (idx === -1 || data.hourly.wave_height[idx] == null) return null;
+    return (data.hourly.wave_height[idx] * 3.281).toFixed(1);
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function renderTides(tides) {
+    return tides.map(t => `
+        <div class="tide-row">
+            <span class="tide-badge ${t.type === 'H' ? 'tide-high' : 'tide-low'}">${t.type === 'H' ? 'High' : 'Low'}</span>
+            <div>
+                <div class="tide-time">${t.time}</div>
+                <div class="tide-date">${t.date}</div>
+            </div>
+        </div>`).join('');
+}
+
+function renderWeather(wx) {
+    return wx.map(w => `
+        <div class="wx-row">
+            <span class="wx-hour">${w.hour}</span>
+            <span class="wx-temp">${w.temp}°F</span>
+            <span class="wx-wind">${w.wind}</span>
+            <span class="wx-precip">${w.precip}%☂</span>
+        </div>`).join('');
+}
+
+// ── Main ───────────────────────────────────────────────────────────────────
+async function loadAll() {
+    document.getElementById('content').innerHTML =
+        `<div class="loading"><div class="spinner"></div><br>Fetching conditions…</div>`;
+    document.getElementById('updated').textContent = '';
+
+    try {
+        const ny  = getNY();
+        const sun = calcSunTimes(ny);
+        const [tides, wx, waveFt] = await Promise.all([
+            fetchTides(ny), fetchWeather(), fetchWaves(ny)
+        ]);
+
+        document.getElementById('content').innerHTML = `
+        <div class="card">
+            <div class="card-label">Next Tides</div>
+            ${renderTides(tides)}
+        </div>
+        <div class="card">
+            <div class="trio">
+                <div class="trio-item">
+                    <span class="trio-icon">🌅</span>
+                    <div class="trio-label">Sunrise</div>
+                    <div class="trio-value">${sun.sunrise}</div>
+                </div>
+                <div class="trio-item">
+                    <span class="trio-icon">🌊</span>
+                    <div class="trio-label">Waves</div>
+                    <div class="trio-value">${waveFt ? waveFt + ' ft' : '—'}</div>
+                    ${waveFt ? '<div class="trio-sub">marine forecast</div>' : ''}
+                </div>
+                <div class="trio-item">
+                    <span class="trio-icon">🌇</span>
+                    <div class="trio-label">Sunset</div>
+                    <div class="trio-value">${sun.sunset}</div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-label">12-Hour Forecast</div>
+            ${renderWeather(wx)}
+        </div>`;
+
+        document.getElementById('updated').textContent = `Updated ${ny.display12}`;
+    } catch (e) {
+        document.getElementById('content').innerHTML =
+            `<div class="error">Failed to load: ${e.message}</div>`;
+    }
+}
+
+loadAll();
+</script>
+</body>
+</html>
