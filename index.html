@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,6 +109,28 @@
         .wx-temp   { color: #e8c87a; }
         .wx-wind   { color: #a0c8a0; font-size: 12px; }
         .wx-precip { color: #7a9bb5; font-size: 12px; text-align: right; }
+
+        /* Link buttons */
+        .link-btns {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .link-btn {
+            flex: 1;
+            display: block;
+            padding: 13px;
+            background: #112240;
+            color: #a0c8a0;
+            border: 1px solid #1e3a5f;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+        }
+        .link-btn:active { background: #1a3a5c; }
 
         /* Controls */
         .refresh-btn {
@@ -333,6 +356,10 @@ async function loadAll() {
         <div class="card">
             <div class="card-label">12-Hour Forecast</div>
             ${renderWeather(wx)}
+        </div>
+        <div class="link-btns">
+            <a class="link-btn" href="https://radar.weather.gov/?settings=v1_eyJhZ2VuZGEiOnsiaWQiOm51bGwsImNlbnRlciI6Wy03My42LDQwLjg2NV0sImxvY2F0aW9uIjpudWxsLCJ6b29tIjo4Ljg5MjY1NTgxNjQyMjk5MX0sImFuaW1hdGluZyI6ZmFsc2UsImJhc2UiOiJzdGFuZGFyZCIsImFydGNjIjpmYWxzZSwiY291bnR5IjpmYWxzZSwiY3dhIjpmYWxzZSwicmZjIjpmYWxzZSwic3RhdGUiOmZhbHNlLCJtZW51Ijp0cnVlLCJzaG9ydEZ1c2VkT25seSI6ZmFsc2UsIm9wYWNpdHkiOnsiYWxlcnRzIjowLjgsImxvY2FsIjowLjYsImxvY2FsU3RhdGlvbnMiOjAuOCwibmF0aW9uYWwiOjAuNn19" target="_blank">Radar</a>
+            <a class="link-btn" href="https://www.weatherlink.com/embeddablePage/show/c7e1d28836884b52a1fdbf5a8e59ed46/summary" target="_blank">Scotch Capz</a>
         </div>`;
 
         document.getElementById('updated').textContent = `Updated ${ny.display12}`;
