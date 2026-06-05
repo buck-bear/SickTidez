@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>SickTidez — Rye, NY</title>
@@ -96,18 +94,18 @@
         /* Weather table */
         .wx-row {
             display: grid;
-            grid-template-columns: 54px 46px 1fr auto;
-            gap: 6px;
-            padding: 7px 0;
+            grid-template-columns: 80px 68px 1fr auto;
+            gap: 8px;
+            padding: 10px 0;
             border-bottom: 1px solid #1a3050;
             align-items: center;
-            font-size: 13px;
+            font-size: 20px;
         }
         .wx-row:last-child { border-bottom: none; }
         .wx-hour   { color: #7dc8e0; font-weight: 600; }
         .wx-temp   { color: #e8c87a; }
-        .wx-wind   { color: #a0c8a0; font-size: 12px; }
-        .wx-precip { color: #7a9bb5; font-size: 12px; text-align: right; }
+        .wx-wind   { color: #a0c8a0; }
+        .wx-precip { color: #7a9bb5; text-align: right; }
 
         /* Link buttons */
         .link-btns {
@@ -184,11 +182,128 @@
     </header>
 
     <div id="content">
-        <div class="loading"><div class="spinner"></div><br>Fetching conditions…</div>
-    </div>
+        <div class="card">
+            <div class="card-label">Next Tides</div>
+            
+        <div class="tide-row">
+            <span class="tide-badge tide-high">High</span>
+            <div>
+                <div class="tide-time">3:25 PM</div>
+                <div class="tide-date">Friday, June 5</div>
+            </div>
+        </div>
+        <div class="tide-row">
+            <span class="tide-badge tide-low">Low</span>
+            <div>
+                <div class="tide-time">9:35 PM</div>
+                <div class="tide-date">Friday, June 5</div>
+            </div>
+        </div>
+        </div>
+        <div class="card">
+            <div class="trio">
+                <div class="trio-item">
+                    <span class="trio-icon">🌅</span>
+                    <div class="trio-label">Sunrise</div>
+                    <div class="trio-value">5:29 AM</div>
+                </div>
+                <div class="trio-item">
+                    <span class="trio-icon">🌊</span>
+                    <div class="trio-label">Waves</div>
+                    <div class="trio-value">0.1 ft</div>
+                    <div class="trio-sub">marine forecast</div>
+                </div>
+                <div class="trio-item">
+                    <span class="trio-icon">🌇</span>
+                    <div class="trio-label">Sunset</div>
+                    <div class="trio-value">8:17 PM</div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-label">12-Hour Forecast</div>
+            
+        <div class="wx-row">
+            <span class="wx-hour">10 AM</span>
+            <span class="wx-temp">78°F</span>
+            <span class="wx-wind">NW 5 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        <div class="wx-row">
+            <span class="wx-hour">11 AM</span>
+            <span class="wx-temp">82°F</span>
+            <span class="wx-wind">NW 5 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        <div class="wx-row">
+            <span class="wx-hour">12 PM</span>
+            <span class="wx-temp">84°F</span>
+            <span class="wx-wind">NW 5 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        <div class="wx-row">
+            <span class="wx-hour">1 PM</span>
+            <span class="wx-temp">86°F</span>
+            <span class="wx-wind">NW 6 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        <div class="wx-row">
+            <span class="wx-hour">2 PM</span>
+            <span class="wx-temp">88°F</span>
+            <span class="wx-wind">W 6 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        <div class="wx-row">
+            <span class="wx-hour">3 PM</span>
+            <span class="wx-temp">90°F</span>
+            <span class="wx-wind">W 6 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        <div class="wx-row">
+            <span class="wx-hour">4 PM</span>
+            <span class="wx-temp">90°F</span>
+            <span class="wx-wind">SW 7 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        <div class="wx-row">
+            <span class="wx-hour">5 PM</span>
+            <span class="wx-temp">89°F</span>
+            <span class="wx-wind">SW 7 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        <div class="wx-row">
+            <span class="wx-hour">6 PM</span>
+            <span class="wx-temp">86°F</span>
+            <span class="wx-wind">SW 7 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        <div class="wx-row">
+            <span class="wx-hour">7 PM</span>
+            <span class="wx-temp">83°F</span>
+            <span class="wx-wind">S 6 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        <div class="wx-row">
+            <span class="wx-hour">8 PM</span>
+            <span class="wx-temp">81°F</span>
+            <span class="wx-wind">S 5 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        <div class="wx-row">
+            <span class="wx-hour">9 PM</span>
+            <span class="wx-temp">79°F</span>
+            <span class="wx-wind">S 5 mph</span>
+            <span class="wx-precip">0%☂</span>
+        </div>
+        </div>
+        <div class="link-btns">
+            <a class="link-btn" href="https://radar.weather.gov/?settings=v1_eyJhZ2VuZGEiOnsiaWQiOm51bGwsImNlbnRlciI6Wy03My42LDQwLjg2NV0sImxvY2F0aW9uIjpudWxsLCJ6b29tIjo4Ljg5MjY1NTgxNjQyMjk5MX0sImFuaW1hdGluZyI6ZmFsc2UsImJhc2UiOiJzdGFuZGFyZCIsImFydGNjIjpmYWxzZSwiY291bnR5IjpmYWxzZSwiY3dhIjpmYWxzZSwicmZjIjpmYWxzZSwic3RhdGUiOmZhbHNlLCJtZW51Ijp0cnVlLCJzaG9ydEZ1c2VkT25seSI6ZmFsc2UsIm9wYWNpdHkiOnsiYWxlcnRzIjowLjgsImxvY2FsIjowLjYsImxvY2FsU3RhdGlvbnMiOjAuOCwibmF0aW9uYWwiOjAuNn19" target="_blank">Radar</a>
+            <a class="link-btn" href="https://www.weatherlink.com/embeddablePage/show/c7e1d28836884b52a1fdbf5a8e59ed46/summary" target="_blank">Scotch Capz</a>
+            <a class="link-btn" href="https://buck-bear.github.io/SickBoatz/" target="_blank">SB</a>
+        </div></div>
 
     <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
-    <div class="updated" id="updated"></div>
+    <div class="updated" id="updated">Updated 10:55 AM</div>
 </div>
 
 <script>
@@ -371,5 +486,6 @@ async function loadAll() {
 
 loadAll();
 </script>
-</body>
-</html>
+
+
+</body></html>
